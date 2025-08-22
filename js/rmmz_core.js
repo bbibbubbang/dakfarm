@@ -841,7 +841,10 @@ Graphics._stretchWidth = function() {
 
 Graphics._stretchHeight = function() {
     if (Utils.isMobileDevice()) {
-        return document.documentElement.clientHeight;
+        // [Note] Mobile browsers often have special operations at the top and
+        //   bottom of the screen.
+        const rate = Utils.isLocal() ? 1.0 : 0.9;
+        return document.documentElement.clientHeight * rate;
     } else {
         return window.innerHeight;
     }
