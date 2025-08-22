@@ -1,0 +1,89 @@
+{
+    "visible": true,
+    "isCanBeEdited": true,
+    "isHaveHideWithMessageFlag": true,
+    "isVisibleOnlyWhenWeaponHaveExtensionsSupport": true,
+    "position": {"x": 170, "y": 560},
+    "buttonImages": {
+        "main": "SkillSlot_00",
+        "hover": "SkillSlot_01",
+        "disabled": "SkillSlot_Disabled"
+    },
+    "pressedOutlineColor": "#fcba03",
+    "outlineMargins": {"x": -2, "y": -2},
+    "icon": {
+        "visible": true,
+        "index": 0,
+        "size": 32,
+        "marings": {"x": 2, "y": 2}
+    },
+    "countText": {
+        "visible": true,
+        "alignment": "right",
+        "font": {
+            "face": "AABS_1",
+            "size": 12,
+            "italic": false
+        },
+        "margins": {"x": 0, "y": -6},
+        "outline": {
+            "color": "rgba(0,0,0,1)",
+            "width": 2
+        },
+        "size": { "w": 32, "h": 32 },
+        "textColor": "rgba(235,133,45,1)"
+    },
+    "menuItem": {
+        "visible": true,
+        "isAnimated": true,
+        "animationDurationInFrames": 30,
+        "fadeInSpeedOf255PerFrame": 30,
+        "xMarginFromParent": 0,
+        "yMarginFromParent": -50,
+        "nothingItemIconIndex": 16,
+        "buttonImages": {
+            "main": "SkillSlot_00",
+            "hover": "SkillSlot_01",
+            "disabled": "SkillSlot_Disabled"
+        },
+        "icon": {
+            "visible": true,
+            "index": 0,
+            "size": 32,
+            "marings": {"x": 2, "y": 2}
+        },
+        "countText": {
+            "visible": true,
+            "alignment": "right",
+            "font": {
+                "face": "AABS_1",
+                "size": 12,
+                "italic": false
+            },
+            "margins": {"x": 0, "y": -6},
+            "outline": {
+                "color": "rgba(0,0,0,1)",
+                "width": 2
+            },
+            "size": { "w": 32, "h": 32 },
+            "textColor": "rgba(235,133,45,1)"
+        },
+        "nameText": {
+            "visible": true,
+            "alignment": "center",
+            "font": {
+                "face": "AABS_1",
+                "size": 12,
+                "italic": false
+            },
+            "margins": {"x": -44, "y":-15},
+            "outline": {
+                "color": "rgba(0,0,0,1)",
+                "width": 2
+            },
+            "size": { "w": 120, "h": 16 },
+            "textColor": "#CCC"
+        },
+        "emptyItemText": "Nothing"
+    }
+}
