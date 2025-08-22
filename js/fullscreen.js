@@ -5,16 +5,35 @@
     function requestFullscreen() {
         const elem = document.documentElement;
         if (elem.requestFullscreen) {
-            elem.requestFullscreen();
+            return elem.requestFullscreen();
         } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
+            return elem.webkitRequestFullscreen();
         } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
+            return elem.msRequestFullscreen();
+        }
+    }
+
+    function lockLandscape() {
+        const orientation = screen.orientation;
+        if (orientation && orientation.lock) {
+            orientation.lock("landscape").catch(() => {});
+        }
+    }
+
+    function unlockOrientation() {
+        const orientation = screen.orientation;
+        if (orientation && orientation.unlock) {
+            orientation.unlock();
         }
     }
 
     button.addEventListener("click", () => {
-        requestFullscreen();
+        const fullscreenPromise = requestFullscreen();
+        if (fullscreenPromise && fullscreenPromise.then) {
+            fullscreenPromise.then(lockLandscape).catch(lockLandscape);
+        } else {
+            lockLandscape();
+        }
     });
 
     function updateButtonVisibility() {
@@ -27,8 +46,19 @@
         }
     }
 
-    document.addEventListener("fullscreenchange", updateButtonVisibility);
-    document.addEventListener("webkitfullscreenchange", updateButtonVisibility);
-    document.addEventListener("msfullscreenchange", updateButtonVisibility);
+    function handleFullscreenChange() {
+        updateButtonVisibility();
+        if (document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement) {
+            lockLandscape();
+        } else {
+            unlockOrientation();
+        }
+    }
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("msfullscreenchange", handleFullscreenChange);
 })();
 
