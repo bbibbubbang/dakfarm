@@ -4,6 +4,14 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+#fullscreenButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 11;
+    padding: 8px 12px;
+    font-size: 14px;
+}
 #errorPrinter {
     position: absolute;
     left: 50%;
