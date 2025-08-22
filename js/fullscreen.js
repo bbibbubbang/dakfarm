@@ -4,6 +4,11 @@ function adjustGameSize() {
     }
 }
 
+function adjustScroll() {
+    const y = document.fullscreenElement ? 0 : 1;
+    setTimeout(() => window.scrollTo(0, y), 0);
+}
+
 async function enterFullscreen() {
     const elem = document.documentElement;
     if (elem.requestFullscreen) {
@@ -23,7 +28,7 @@ async function enterFullscreen() {
     }
 
     adjustGameSize();
-    setTimeout(() => window.scrollTo(0, 1), 0);
+    adjustScroll();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -31,5 +36,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btn) {
         btn.addEventListener("click", enterFullscreen);
     }
-    window.addEventListener("resize", adjustGameSize);
+    window.addEventListener("resize", () => {
+        adjustGameSize();
+        adjustScroll();
+    });
+});
+
+document.addEventListener("fullscreenchange", () => {
+    const btn = document.getElementById("fullscreenBtn");
+    if (btn) {
+        btn.style.display = document.fullscreenElement ? "none" : "block";
+    }
+    adjustGameSize();
+    adjustScroll();
 });
