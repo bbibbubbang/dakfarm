@@ -1,0 +1,17 @@
+[
+null,
+{"id":1,"expanded":false,"name":"MAP001","order":3,"parentId":0,"scrollX":1216.5,"scrollY":692.25},
+{"id":2,"expanded":false,"name":"몬스터스폰맵","order":1,"parentId":0,"scrollX":816,"scrollY":624,"quick":false},
+{"id":3,"expanded":false,"name":"테스트맵","order":4,"parentId":0,"scrollX":811,"scrollY":461.5,"quick":false},
+{"id":4,"expanded":true,"name":"용사키우기","order":5,"parentId":0,"scrollX":1228.5,"scrollY":3302.25,"quick":false},
+{"id":5,"expanded":true,"name":"닭농장 키우기","order":6,"parentId":0,"scrollX":1081,"scrollY":1023.5,"quick":false},
+{"id":6,"expanded":false,"name":"숲 마을","order":14,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":7,"expanded":false,"name":"포켓인벤토리맵","order":2,"parentId":0,"scrollX":856.5,"scrollY":538.5,"quick":false},
+{"id":8,"expanded":true,"name":"버려진 민가","order":7,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":9,"expanded":true,"name":"일반 주택","order":9,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":10,"expanded":true,"name":"민가 1","order":8,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":11,"expanded":true,"name":"상류층 집 1층","order":10,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":12,"expanded":false,"name":"상류층 집 2층","order":11,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false},
+{"id":13,"expanded":false,"name":"공중 신전","order":12,"parentId":5,"scrollX":1216.5,"scrollY":1542.75,"quick":false},
+{"id":14,"expanded":false,"name":"버려진 마을","order":13,"parentId":5,"scrollX":1216.5,"scrollY":692.25,"quick":false}
+]
