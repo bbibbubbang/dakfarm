@@ -1,0 +1,58 @@
+{
+    "windowSize":  {
+        "width": 160,
+        "height": 360
+    },
+    "windowHeaderTextSettings": {
+        "visible": true,
+        "alignment": "center",
+        "font": {
+            "face": "AABS_0",
+            "size": 14,
+            "italic": false
+        },
+        "margins": {"x": 0, "y": 0},
+        "outline": {
+            "color": "rgba(0,0,0,1)",
+            "width": 2
+        },
+        "size": { "w": 160, "h": 28 },
+        "textColor": "#FFFFFF"
+    },
+    "skillHeaderText": "SKILLS",
+    "itemsHeaderText": "ITEMS",
+    "windowFromEdgesMargin": 32,
+    "skillsCategoryButtonPosition": {
+        "x": 26,
+        "y": 6
+    },
+    "itemsCategoryButtonPosition": {
+        "x": 86,
+        "y": 6
+    },
+    "itemsSkillsListWindow": {
+        "size": {
+            "width": 160,
+            "height": 280
+        },
+        "position": {
+            "x": 0,
+            "y": 50
+        },
+        "maxCols": 1,
+        "lineHeight": 36,
+        "iconSize": 32,
+        "itemNameTextSettings": {
+            "size": 14,
+            "font": null
+        },
+        "removeCommand": {
+            "textColor": "#e32614",
+            "iconIndex": 16,
+            "title": "[Remove]"
+        },
+        "attackSkillTextColor": "#148de3",
+        "skillsNamesTextColor": "#dba512",
+        "itemsNamesTextColor": "#20d67b"
+    }
+}
