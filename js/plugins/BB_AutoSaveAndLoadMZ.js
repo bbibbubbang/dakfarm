@@ -1,7 +1,7 @@
 /*:
  * @target MZ
- * @plugindesc v1.0 [KR] 5초마다 자동저장 + 부팅 시 자동 로드(슬롯 지정 가능)
- * @author BB
+ * @plugindesc v1.0 [KR] 5초마다 자동저장 + 부팅 시 자동 로드(슬롯 지정 가능) (save 함수 폴백)
+ * @author You
  *
  * @param IntervalSeconds
  * @text 자동저장 간격(초)
@@ -25,19 +25,17 @@
  *
  * @help
  * ■ 기능
- * - 맵에 있을 때 설정한 간격(기본 5초)으로 자동저장합니다.
- * - 게임 실행 시 지정 슬롯에 세이브가 있으면 자동으로 로드합니다.
- *   (부팅 순간 Shift/Control/Alt 중 설정한 키를 누르고 있으면 자동로드를 건너뜁니다)
+ * - 맵 씬에서 설정 간격(기본 5초)으로 자동저장.
+ * - 게임 실행 시 지정 슬롯 세이브가 있으면 자동 로드.
+ *   (부팅 때 설정 키를 누르고 있으면 자동로드 건너뜀)
  *
- * ■ 권장 사용법
- * - SavefileId는 1로 두고(오토세이브 전용), 수동 저장은 2번 이상 슬롯을 쓰세요.
- * - 너무 잦으면 IntervalSeconds를 늘리세요(모바일/웹뷰: 10~15초 권장).
+ * ■ 메모
+ * - 일부 환경에서 DataManager.saveGameWithoutRescue가 없을 수 있어
+ *   자동으로 DataManager.saveGame으로 폴백함.
  *
  * ■ 주의
- * - 이벤트 실행/메시지 표시/장면 전환 중에는 저장을 미룹니다.
- * - 전투 중에는 저장하지 않습니다(맵 씬에서만 동작).
- *
- * 제작: BB (무료 사용)
+ * - 이벤트 실행/메시지 표시/장면 전환 중에는 저장 보류.
+ * - 전투/타이틀 등 맵 외 장면에선 저장 안 함.
  */
 (() => {
   const pluginName = 'BB_AutoSaveAndLoadMZ';
@@ -46,57 +44,66 @@
   const SAVE_ID = Math.max(1, Number(p['SavefileId'] || 1));
   const SKIP_KEY = String(p['SkipKey'] || 'shift'); // 'shift' | 'control' | 'alt'
 
-  function skipKeyPressed() {
-    return Input.isPressed(SKIP_KEY);
+  // ----- 키 체크 -----
+  function skipKeyPressed() { return Input.isPressed(SKIP_KEY); }
+
+  // ----- 저장 함수 폴백 -----
+  function saveGamePromise(slotId) {
+    const fn = DataManager.saveGameWithoutRescue || DataManager.saveGame;
+    try {
+      const result = fn.call(DataManager, slotId);
+      // MZ는 Promise<boolean> 반환. 혹시 동기라면 Promise로 감싸기.
+      if (result && typeof result.then === 'function') return result;
+      return Promise.resolve(!!result);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
-  // ---------- Auto Load on Boot (from Title) ----------
-  let bbTriedAutoload = false;
+  // ----- 부팅 시 자동 로드 -----
+  let triedAutoload = false;
   const _Scene_Title_start = Scene_Title.prototype.start;
   Scene_Title.prototype.start = function () {
     _Scene_Title_start.call(this);
-    if (!bbTriedAutoload && !skipKeyPressed()) {
-      bbTriedAutoload = true;
-      // 지정 슬롯 로드 시도
-      DataManager.loadGame(SAVE_ID)
-        .then((success) => {
+    if (!triedAutoload && !skipKeyPressed()) {
+      triedAutoload = true;
+      if (DataManager && DataManager.loadGame) {
+        DataManager.loadGame(SAVE_ID).then(success => {
           if (success) {
-            try { SoundManager.playLoad(); } catch (e) {}
+            try { SoundManager.playLoad(); } catch (_) {}
             this.fadeOutAll();
             if ($gameSystem && $gameSystem.onAfterLoad) $gameSystem.onAfterLoad();
             SceneManager.goto(Scene_Map);
           }
-          // 실패하면(세이브 없음 등) 그냥 타이틀 유지
-        })
-        .catch((e) => console.error('[BB_AutoSaveAndLoadMZ] autoload error', e));
+        }).catch(e => console.error('[BB_AutoSaveAndLoadMZ] autoload error', e));
+      }
     }
   };
 
-  // ---------- Auto Save on Map ----------
-  let bbSaving = false;
+  // ----- 맵에서 자동 저장 -----
+  let savingNow = false;
 
-  function bbCanAutoSaveNow() {
-    if (bbSaving) return false;
+  function canAutoSaveNow() {
+    if (savingNow) return false;
     if (!$gameSystem || !$gameMap) return false;
     if (!$gameSystem.isSaveEnabled()) return false;
     if ($gameMap.isEventRunning && $gameMap.isEventRunning()) return false;
     if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
     if (SceneManager.isSceneChanging && SceneManager.isSceneChanging()) return false;
     if (SceneManager.isBusy && SceneManager.isBusy()) return false;
+    // 맵 씬에서만
+    if (!(SceneManager._scene instanceof Scene_Map)) return false;
     return true;
   }
 
-  function bbDoAutoSave() {
-    bbSaving = true;
-    DataManager.saveGameWithoutRescue(SAVE_ID)
+  function doAutoSave() {
+    savingNow = true;
+    saveGamePromise(SAVE_ID)
       .then(() => {
         if ($gameSystem && $gameSystem.onAfterSave) $gameSystem.onAfterSave();
-        // 성공해도 메시지는 따로 띄우지 않음(조용히 저장)
       })
-      .catch((e) => console.error('[BB_AutoSaveAndLoadMZ] save failed', e))
-      .finally(() => {
-        bbSaving = false;
-      });
+      .catch(e => console.error('[BB_AutoSaveAndLoadMZ] save failed', e))
+      .finally(() => { savingNow = false; });
   }
 
   const _Scene_Map_start = Scene_Map.prototype.start;
@@ -113,12 +120,11 @@
     }
     const now = performance.now();
     if (now >= this._bbNextAutoSaveAt) {
-      if (bbCanAutoSaveNow()) {
-        bbDoAutoSave();
+      if (canAutoSaveNow()) {
+        doAutoSave();
         this._bbNextAutoSaveAt = now + INTERVAL * 1000;
       } else {
-        // 바쁠 때는 0.5초 뒤로 미룸
-        this._bbNextAutoSaveAt = now + 500;
+        this._bbNextAutoSaveAt = now + 500; // 잠깐 보류
       }
     }
   };
